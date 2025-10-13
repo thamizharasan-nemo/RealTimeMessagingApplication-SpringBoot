@@ -1,0 +1,15 @@
+package com.example.RealTimeChat.DTO.PayloadDTO;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class ChangeParticipantRoleDTO {
+    private int conversationId;
+    private int currAdminId;
+    private int targetUserId;
+    private boolean makeAdmin;
+}
