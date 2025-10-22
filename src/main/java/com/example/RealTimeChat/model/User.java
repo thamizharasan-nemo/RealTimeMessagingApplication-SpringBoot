@@ -40,7 +40,7 @@ public class User {
 
     private String bio;
     private boolean online;
-    private Instant lastSeen = Instant.now();
+    private Instant lastSeen;
 
     // STORES Image in DB
     private String profPicName;

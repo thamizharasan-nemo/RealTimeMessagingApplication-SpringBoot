@@ -22,9 +22,8 @@ public class BannedUser {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User user;
 
-    private Instant bannedAt = Instant.now();
+    private Instant bannedAt;
     private String bannedBy;
     private String reason;
     private boolean permanently = true;
-    private Instant unBanAt;
 }

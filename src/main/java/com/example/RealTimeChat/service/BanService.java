@@ -8,6 +8,8 @@ import com.example.RealTimeChat.repository.BanRepository;
 import com.example.RealTimeChat.repository.ParticipantRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+
 @Service
 public class BanService {
 
@@ -45,6 +47,7 @@ public class BanService {
         BannedUser bannedUser = BannedUser.builder()
                 .conversation(conversation)
                 .user(target.getUser())
+                .bannedAt(Instant.now())
                 .reason(banUserDTO.getReason())
                 .bannedBy(admin.getUser().getUsername())
                 .permanently(true)

@@ -152,11 +152,18 @@ public class UserService {
         userRepo.deleteById(userId);
     }
 
+    public void disconnectUser(int userId){
+        User user = getUserById(userId);
+        user.setOnline(false);
+        user.setLastSeen(Instant.now());
+        userRepo.save(user);
+    }
 
     public String lastSeenHelper(User user) {
         Instant lastSeen = user.getLastSeen();
-        long minutesAgo = Duration.between(Instant.now(), lastSeen).toMinutes();
+        if (lastSeen == null) return "Never seen!";
 
+        long minutesAgo = Duration.between(lastSeen, Instant.now()).toMinutes();
         if (minutesAgo < 5) {
             return "last seen just now";
         } else if (minutesAgo < 60) {

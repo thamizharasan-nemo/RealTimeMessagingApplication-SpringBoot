@@ -5,9 +5,11 @@ import com.example.RealTimeChat.DTO.ConversationResponseDTO;
 import com.example.RealTimeChat.DTO.MessageResponseDTO;
 import com.example.RealTimeChat.DTO.PayloadDTO.*;
 import com.example.RealTimeChat.model.Conversation;
+import com.example.RealTimeChat.model.Message;
 import com.example.RealTimeChat.service.BlockedService;
 import com.example.RealTimeChat.service.ConversationService;
 import com.example.RealTimeChat.service.MessageService;
+import com.example.RealTimeChat.service.ReadReceiptService;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -22,13 +24,15 @@ public class ChatController {
     private final MessageService messageService;
     private final ConversationService conversationService;
     private final BlockedService blockedService;
+    private final ReadReceiptService readReceiptService;
 
 
-    public ChatController(SimpMessagingTemplate simpMessagingTemplate, MessageService messageService, ConversationService conversationService, BlockedService blockedService) {
+    public ChatController(SimpMessagingTemplate simpMessagingTemplate, MessageService messageService, ConversationService conversationService, BlockedService blockedService, ReadReceiptService readReceiptService) {
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.messageService = messageService;
         this.conversationService = conversationService;
         this.blockedService = blockedService;
+        this.readReceiptService = readReceiptService;
     }
 
 
@@ -488,6 +492,17 @@ public class ChatController {
 
         simpMessagingTemplate.convertAndSend(
                 "/topic/conversation." + moderationDTO.getModeratorId()
+        );
+    }
+
+    @MessageMapping("chat.read")
+    public void markReadReceipt(@Payload ReadReceiptDTO readReceiptDTO){
+        Message message = messageService.getMessageByIdWithDetails(readReceiptDTO.getMessageId());
+        readReceiptService.markAsRead(readReceiptDTO);
+        simpMessagingTemplate.convertAndSendToUser(
+                String.valueOf(message.getSender().getUserId()),
+                "/queue/conversation/"+message.getConversation().getConversationId(),
+                readReceiptDTO
         );
     }
 }
