@@ -18,7 +18,7 @@ public class SchedulingService {
     }
 
     // runs every hour
-    @Scheduled(fixedRate = 60 * 60 * 1000) // 60 min x 60 sec x 1000 milli = 1 hour
+    @Scheduled(fixedRate = 60 * 60 * 1000) // min x sec x milli = 1 hour
     public void deleteDisappearingMessages(){
         LocalDateTime now = LocalDateTime.now();
         List<Message> expired = messageRepo.findExpiredMessages(now);
