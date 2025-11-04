@@ -6,10 +6,7 @@ import com.example.RealTimeChat.DTO.MessageResponseDTO;
 import com.example.RealTimeChat.DTO.PayloadDTO.*;
 import com.example.RealTimeChat.model.Conversation;
 import com.example.RealTimeChat.model.Message;
-import com.example.RealTimeChat.service.BlockedService;
-import com.example.RealTimeChat.service.ConversationService;
-import com.example.RealTimeChat.service.MessageService;
-import com.example.RealTimeChat.service.ReadReceiptService;
+import com.example.RealTimeChat.service.*;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -25,14 +22,16 @@ public class ChatController {
     private final ConversationService conversationService;
     private final BlockedService blockedService;
     private final ReadReceiptService readReceiptService;
+    private final NotificationService notificationService;
 
 
-    public ChatController(SimpMessagingTemplate simpMessagingTemplate, MessageService messageService, ConversationService conversationService, BlockedService blockedService, ReadReceiptService readReceiptService) {
+    public ChatController(SimpMessagingTemplate simpMessagingTemplate, MessageService messageService, ConversationService conversationService, BlockedService blockedService, ReadReceiptService readReceiptService, NotificationService notificationService) {
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.messageService = messageService;
         this.conversationService = conversationService;
         this.blockedService = blockedService;
         this.readReceiptService = readReceiptService;
+        this.notificationService = notificationService;
     }
 
 
@@ -58,6 +57,8 @@ public class ChatController {
                     savedMessage
             );
         }
+
+        notificationService.notifyParticipants(conversation, savedMessage);
     }
 
     @MessageMapping("chat.sendPrivate")

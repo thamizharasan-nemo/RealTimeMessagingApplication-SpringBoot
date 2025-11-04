@@ -30,17 +30,22 @@ public class WebSocketEventListener {
         this.userService = userService;
     }
 
+    // Just to add users in presence list, if online
+    // added an end point to tell frontend that a user is online
+
     @EventListener
     public void connectUser(SessionConnectedEvent event){
         Principal user = event.getUser();
         if (user != null){
-            int userId = Integer.parseInt(user.getName());
+            int userId = Integer.parseInt(user.getName()); // user.getName() is just their userId not name
             presenceService.connect(userId);
 
             Logger log = LoggerFactory.getLogger(user.getName());
             log.info("User " + user.getName() + " connected");
 
-            simpMessagingTemplate.convertAndSend("/topic/presence", userId + " is ONLINE");
+            simpMessagingTemplate.convertAndSend(
+                    "/topic/presence",
+                    "User" + userId + " is ONLINE");
         }
     }
 
