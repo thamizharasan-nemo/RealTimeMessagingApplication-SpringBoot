@@ -650,7 +650,7 @@ public class ConversationService {
         Conversation conversation = getConversationById(conversationId);
         Optional<User> receiver = conversation.getParticipants().stream()
                 .map(p -> p.getUser())
-                .filter(u -> u.getUserId()!=senderId)
+                .filter(u -> u.getUserId() != senderId)
                 .findFirst();
         if (receiver.isEmpty()){
             throw new UserNotFoundException("Receiver not found");

@@ -16,8 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
-import java.io.FileInputStream;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -44,8 +43,9 @@ public class MessageService {
     private final ParticipantRepository participantRepo;
     private final BlockRepository blockRepo;
     private final BanRepository banRepo;
+    private final NotificationService notificationService;
 
-    public MessageService(ConversationRepository conversationRepo, ConversationService conversationService, MessageRepository messageRepo, UserRepository userRepo, UserService userService, ParticipantRepository participantRepo, BlockRepository blockRepo, BanRepository banRepo) {
+    public MessageService(ConversationRepository conversationRepo, ConversationService conversationService, MessageRepository messageRepo, UserRepository userRepo, UserService userService, ParticipantRepository participantRepo, BlockRepository blockRepo, BanRepository banRepo, NotificationService notificationService) {
         this.conversationRepo = conversationRepo;
         this.conversationService = conversationService;
         this.messageRepo = messageRepo;
@@ -54,6 +54,7 @@ public class MessageService {
         this.participantRepo = participantRepo;
         this.blockRepo = blockRepo;
         this.banRepo = banRepo;
+        this.notificationService = notificationService;
     }
 
     public Message getMessageById(int messageId){
@@ -218,6 +219,18 @@ public class MessageService {
         sender.setLastSeen(Instant.now());
         userRepo.save(sender);
         Message saved = messageRepo.save(message);
+
+        // Sending Notification to users
+//        notificationService.notifyNewMessage(
+//                messageDTO.getConversationId(),
+//                message.getMessageId(),
+//                sender.getNickname(),
+//                message.getContent() != null
+//                        ? message.getContent().substring(0, Math.min(40, message.getContent().length()))
+//                        : "[empty_message]",
+//                sender.getUserId()
+//                );
+
         MessageResponseDTO messageResponse = new MessageResponseDTO();
         convertToMessageResponseDTO(messageResponse, saved, 1);
         return messageResponse;
