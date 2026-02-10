@@ -4,8 +4,6 @@ import com.example.RealTimeChat.model.User;
 import com.example.RealTimeChat.service.PresenceService;
 import com.example.RealTimeChat.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
@@ -38,14 +36,15 @@ public class WebSocketEventListener {
         Principal user = event.getUser();
         if (user != null){
             int userId = Integer.parseInt(user.getName()); // user.getName() is just their userId not name
-            presenceService.connect(userId);
+            presenceService.connect(userId); // in-memory Map class for all online users
 
-            Logger log = LoggerFactory.getLogger(user.getName());
+            presenceService.markOnline(userId); // redis key-value store for online users
+
             log.info("User " + user.getName() + " connected");
 
             simpMessagingTemplate.convertAndSend(
                     "/topic/presence",
-                    "User" + userId + " is ONLINE");
+                    "User " + userId + " is ONLINE");
         }
     }
 
@@ -55,6 +54,8 @@ public class WebSocketEventListener {
         if(user != null){
             int userId = Integer.parseInt(user.getName());
             presenceService.disconnect(userId);
+
+            presenceService.markOffline(userId);
 
             log.info("User " + user.getName() + " disconnected");
 
@@ -71,4 +72,5 @@ public class WebSocketEventListener {
             simpMessagingTemplate.convertAndSend("/topic/presence", payload);
         }
     }
+
 }

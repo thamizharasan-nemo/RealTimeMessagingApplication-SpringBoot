@@ -8,6 +8,7 @@ class RealTimeChatApplicationTests {
 
 	@Test
 	void contextLoads() {
+
 	}
 
 }

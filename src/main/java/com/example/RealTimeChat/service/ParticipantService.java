@@ -28,6 +28,7 @@ public class ParticipantService {
                 .map(p -> {
                             ParticipantResponseDTO response = new ParticipantResponseDTO();
                             response.setPId(p.getCpId());
+                            response.setConvId(p.getConversation().getConversationId());
                             response.setRole(p.getParticipantRole().name());
                             response.setNickname(p.getUser().getNickname());
                             response.setUserId(p.getUser().getUserId());
@@ -55,6 +56,7 @@ public class ParticipantService {
                 .map(p -> {
                             ParticipantResponseDTO response = new ParticipantResponseDTO();
                             response.setPId(p.getCpId());
+                            response.setConvId(p.getConversation().getConversationId());
                             response.setRole(p.getParticipantRole().name());
                             response.setNickname(p.getUser().getNickname());
                             response.setUserId(p.getUser().getUserId());
@@ -63,5 +65,6 @@ public class ParticipantService {
                         }
                 ).toList();
     }
+
 
 }

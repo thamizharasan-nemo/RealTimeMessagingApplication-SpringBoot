@@ -8,6 +8,7 @@ import java.time.Instant;
 public class ParticipantResponseDTO {
     private int pId;
     private int userId;
+    private int convId;
     private String nickname;
     private String role;
     private Instant joinedOn;

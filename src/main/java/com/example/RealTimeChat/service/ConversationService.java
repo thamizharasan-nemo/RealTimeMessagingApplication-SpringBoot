@@ -167,6 +167,7 @@ public class ConversationService {
                 .map(p -> {
                     ParticipantResponseDTO prDto = new ParticipantResponseDTO();
                     prDto.setPId(p.getCpId());
+                    prDto.setConvId(p.getConversation().getConversationId());
                     prDto.setUserId(p.getUser().getUserId());
                     prDto.setNickname(p.getUser().getNickname());
                     prDto.setRole(p.getParticipantRole().name());

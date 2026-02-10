@@ -12,9 +12,18 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
+    RateLimitingInterceptor rateLimitingInterceptor;
+    UserInterceptor userInterceptor;
+
+    public WebSocketConfig(RateLimitingInterceptor rateLimitingInterceptor, UserInterceptor userInterceptor) {
+        this.rateLimitingInterceptor = rateLimitingInterceptor;
+        this.userInterceptor = userInterceptor;
+    }
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic", "/queue");
+        config.enableSimpleBroker("/topic", "/queue")
+                .setHeartbeatValue(new long[]{10000, 10000});
         config.setApplicationDestinationPrefixes("/app");
         config.setUserDestinationPrefix("/user");
     }
@@ -30,6 +39,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     // The inbound channel is where messages from clients (like CONNECT, SUBSCRIBE, SEND) arrive.
     // with custom interceptor message can be read or modified before sent to broker
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(new UserInterceptor());
+        registration.interceptors(userInterceptor, rateLimitingInterceptor);
     }
 }

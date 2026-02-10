@@ -24,7 +24,7 @@ public class SchedulingService {
         List<Message> expired = messageRepo.findExpiredMessages(now);
         if(!expired.isEmpty()){
             // soft deletion
-            expired.forEach(m -> messageRepo.delete(m));
+            expired.forEach(messageRepo::delete);
         }
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -29,5 +30,15 @@ public class PresenceController {
     @GetMapping("/all")
     public ResponseEntity<Set<Integer>> getAllOnlineUsers() {
         return ResponseEntity.ok(presenceService.getOnlineUsers());
+    }
+
+    @GetMapping("/all/redis")
+    public ResponseEntity<List<Integer>> getAllOnlineUsersFromRedis() {
+        return ResponseEntity.ok(presenceService.getOnlineUsersFromRedis());
+    }
+
+    @GetMapping("/all/conv/redis/{convId}")
+    public ResponseEntity<List<Integer>> getAllOnlineUsersForConv(@PathVariable Integer convId) {
+        return ResponseEntity.ok(presenceService.getAllOnlineUserInConv(convId));
     }
 }

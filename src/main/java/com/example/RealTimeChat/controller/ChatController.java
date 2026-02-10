@@ -13,6 +13,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 public class ChatController {
@@ -23,15 +24,17 @@ public class ChatController {
     private final BlockedService blockedService;
     private final ReadReceiptService readReceiptService;
     private final NotificationService notificationService;
+    private final PresenceService presenceService;
 
 
-    public ChatController(SimpMessagingTemplate simpMessagingTemplate, MessageService messageService, ConversationService conversationService, BlockedService blockedService, ReadReceiptService readReceiptService, NotificationService notificationService) {
+    public ChatController(SimpMessagingTemplate simpMessagingTemplate, MessageService messageService, ConversationService conversationService, BlockedService blockedService, ReadReceiptService readReceiptService, NotificationService notificationService, PresenceService presenceService) {
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.messageService = messageService;
         this.conversationService = conversationService;
         this.blockedService = blockedService;
         this.readReceiptService = readReceiptService;
         this.notificationService = notificationService;
+        this.presenceService = presenceService;
     }
 
 
@@ -506,4 +509,5 @@ public class ChatController {
                 readReceiptDTO
         );
     }
+
 }
