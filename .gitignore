@@ -13,12 +13,6 @@ target/
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -29,5 +23,36 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### VS Code ###
+# Maven
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# IDEs
+.idea/
 .vscode/
+*.iml
+*.ipr
+*.iws
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment & secrets
+.env
+.env.*
+application-local.properties
+application-prod-local.properties
+
+# Docker
+docker-compose.override.yml
+
+# Test reports
+/surefire-reports/
+/failsafe-reports/
+
+# Firebase credentials
+src/main/resources/firebase/*.json
