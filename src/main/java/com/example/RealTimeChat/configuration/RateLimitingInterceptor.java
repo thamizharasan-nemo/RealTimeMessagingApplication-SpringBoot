@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 public class RateLimitingInterceptor implements ChannelInterceptor {
 
     private final RateLimitingService rateLimitingService;
+
     public RateLimitingInterceptor(RateLimitingService rateLimitingService) {
         this.rateLimitingService = rateLimitingService;
     }

@@ -15,13 +15,15 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
 
+    Optional<User> loadByUsername(String username);
+
     @Query("SELECT u FROM User u " +
             "WHERE LOWER(u.phoneNo) LIKE LOWER(CONCAT('%', :phoneNo, '%'))")
     List<User> findByPhoneNo(String phoneNo);
 
     @Query("SELECT u FROM User u " +
             "WHERE LOWER(u.username) LIKE LOWER(CONCAT('%', :username, '%'))")
-    List<User> findByUsername(@Param("username") String username);
+    User findByUsername(@Param("username") String username);
 
     @Query("SELECT u FROM User u " +
             "WHERE (:keyword IS NULL OR LOWER(u.username) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +

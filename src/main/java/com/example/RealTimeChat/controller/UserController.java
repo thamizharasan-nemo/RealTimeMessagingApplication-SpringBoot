@@ -43,7 +43,7 @@ public class UserController {
     }
 
     @GetMapping("/search-by")
-    public ResponseEntity<List<UserResponseDTO>> getUsersByUsername(@RequestParam String username) {
+    public ResponseEntity<UserResponseDTO> getUsersByUsername(@RequestParam String username) {
         return ResponseEntity.ok(userService.findByUsername(username));
     }
 

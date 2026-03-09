@@ -40,14 +40,12 @@ public class UserService {
         return userRepo.existsById(userId);
     }
 
-    public List<UserResponseDTO> findByUsername(String username) {
-        List<User> users = userRepo.findByUsername(username);
-        if(users.isEmpty()){
+    public UserResponseDTO findByUsername(String username) {
+        User user = userRepo.findByUsername(username);
+        if(user == null){
             throw new UserNotFoundException("User with " + username + " not found.");
         }
-        return users.stream()
-                .map(this::convertToResponseDTO)
-                .toList();
+        return convertToResponseDTO(user);
     }
 
     public List<UserResponseDTO> findByPhoneNo(String phoneNo) {

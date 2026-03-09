@@ -15,8 +15,6 @@ import org.redisson.config.Config;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 @Slf4j
@@ -33,7 +31,7 @@ public class RateLimitingService {
         Config config = new Config();
         config.useSingleServer().setAddress("redis://127.0.0.1:6379");
         this.redissonClient = Redisson.create(config);
-        this.proxyManager = Bucket4jRedisson.casBasedBuilder(((Redisson)redissonClient).getCommandExecutor()).build();
+        this.proxyManager = Bucket4jRedisson.casBasedBuilder(((Redisson) redissonClient).getCommandExecutor()).build();
 
         Bandwidth limit = Bandwidth.builder()
                 .capacity(30)
