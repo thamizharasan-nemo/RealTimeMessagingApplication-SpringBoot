@@ -93,7 +93,7 @@ The backend provides several core features commonly found in modern messaging sy
 
 The following diagram shows the high level architecture of the system and how different components interact.
 
-![Architecture](docs/Chat_App_Architecture.png)
+![Architecture](docs/architecture.png)
 
 The system follows a layered architecture:
 
