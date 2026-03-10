@@ -36,8 +36,9 @@ public class ConversationService {
     private final BanRepository banRepo;
     private BanService banService;
 
-    /* BanService caused cyclic dependency error, ConversationService -> BanService -> ConversationService
-    So I used field injection/setter to workaround with circular dependency.
+    /*
+        BanService caused cyclic dependency error, ConversationService -> BanService -> ConversationService
+        So I used field injection/setter to workaround with circular dependency.
     */
     @Autowired
     public void setBanService(@Lazy BanService banService){
@@ -385,7 +386,7 @@ public class ConversationService {
             participantRepo.delete(participant);
             List<ConversationParticipant> participantList = participantRepo.findByConversationId(leaveConvDTO.getConversationId());
             participantList.sort((p1, p2) ->
-                    p1.getCpId() < p2.getCpId() ? -1 : 1); // is this line actually important
+                    p1.getCpId() < p2.getCpId() ? -1 : 1); // is this line actually important?
             ConversationParticipant newAdmin = participantList.stream().iterator().next();
             newAdmin.setParticipantRole(ParticipantRole.ADMIN);
             participantRepo.save(newAdmin);

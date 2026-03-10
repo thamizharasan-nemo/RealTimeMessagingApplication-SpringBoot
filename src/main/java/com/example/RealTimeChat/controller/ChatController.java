@@ -8,6 +8,7 @@ import com.example.RealTimeChat.DTO.PayloadDTO.*;
 import com.example.RealTimeChat.component.ChatEventPublisher;
 import com.example.RealTimeChat.model.Conversation;
 import com.example.RealTimeChat.model.Message;
+import com.example.RealTimeChat.security.SecurityUtils;
 import com.example.RealTimeChat.service.*;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -44,205 +45,239 @@ public class ChatController {
     }
 
 
-    private int resolveUserId(Principal principal){
-        return userService.findByUsername(principal.getName()).getUserId();
-    }
-
     @MessageMapping("chat.send")
-    public void processGroupMessage(@Payload ChatMessageDTO chatMessageDTO, Principal principal) {
+    public void processGroupMessage(@Payload ChatMessageDTO chatMessageDTO) {
+        int userId = SecurityUtils.getUserId();
+        chatMessageDTO.setSenderId(userId);
         MessageResponseDTO savedMessage = messageService.saveMessage(chatMessageDTO);
         Conversation conversation = conversationService.getConversationById(chatMessageDTO.getConversationId());
         chatPublisher.broadcastToConversation(
                 chatMessageDTO.getConversationId(),
-                chatMessageDTO.getSenderId(),
-                new ChatEvent<>("MESSAGE_EDITED", savedMessage)
+                userId,
+                new ChatEvent<>("MESSAGE_SENT", savedMessage)
         );
 
         notificationService.notifyParticipants(conversation, savedMessage);
     }
 
     @MessageMapping("chat.edit")
-    public void editMessage(@Payload EditMessageDTO editMessageDTO, Principal principal){
+    public void editMessage(@Payload EditMessageDTO editMessageDTO){
+        int userId = SecurityUtils.getUserId();
+        editMessageDTO.setSenderId(userId);
         MessageResponseDTO updated = messageService.editMessage(editMessageDTO);
         chatPublisher.broadcastToConversation(
                 editMessageDTO.getConversationId(),
-                editMessageDTO.getSenderId(),
+                userId,
                 new ChatEvent<>("MESSAGE_EDITED", updated)
         );
     }
 
     @MessageMapping("chat.softDelete")
-    public void deleteMessage(@Payload DeleteMessageDTO deleteMessageDTO, Principal principal) {
+    public void deleteMessage(@Payload DeleteMessageDTO deleteMessageDTO) {
+        int userId = SecurityUtils.getUserId();
+        deleteMessageDTO.setUserId(userId);
        messageService.softDeleteMessage(deleteMessageDTO);
        MessageResponseDTO softDeleted = messageService.getMessageResponseById(deleteMessageDTO.getMessageId());
         chatPublisher.broadcastToConversation(
                 deleteMessageDTO.getConversationId(),
-                deleteMessageDTO.getUserId(),
-                softDeleted
+                userId,
+                new ChatEvent<>("MESSAGE_SOFT_DELETED", softDeleted)
         );
     }
 
     @MessageMapping("chat.hardDelete")
-    public void hardDeleteMessage(@Payload DeleteMessageDTO deleteMessageDTO, Principal principal) {
+    public void hardDeleteMessage(@Payload DeleteMessageDTO deleteMessageDTO) {
+        int userId = SecurityUtils.getUserId();
+        deleteMessageDTO.setUserId(userId);
         messageService.deleteMessagePermanently(deleteMessageDTO);
         chatPublisher.broadcastToConversation(
                 deleteMessageDTO.getConversationId(),
-                deleteMessageDTO.getUserId(),
-                "Message deleted successfully"
+                userId,
+                "MESSAGE_HARD_DELETED"
         );
     }
 
     @MessageMapping("chat.pin")
-    public void pinMessage(@Payload PinMessageDTO pinMessageDTO, Principal principal) {
+    public void pinMessage(@Payload PinMessageDTO pinMessageDTO) {
+        int userId = SecurityUtils.getUserId();
+        pinMessageDTO.setUserId(userId);
         MessageResponseDTO pinned = messageService.pinMessage(pinMessageDTO);
         chatPublisher.broadcastToConversation(
                 pinMessageDTO.getConversationId(),
-                pinMessageDTO.getUserId(),
-                pinned
+                userId,
+                new ChatEvent<>("MESSAGE_PINNED", pinned)
         );
     }
 
     @MessageMapping("chat.unpin")
-    public void unPinMessage(@Payload PinMessageDTO pinMessageDTO, Principal principal) {
+    public void unPinMessage(@Payload PinMessageDTO pinMessageDTO) {
+        int userId = SecurityUtils.getUserId();
+        pinMessageDTO.setUserId(userId);
         MessageResponseDTO unpinned = messageService.unpinMessage(pinMessageDTO);
         chatPublisher.broadcastToConversation(
                 pinMessageDTO.getConversationId(),
-                pinMessageDTO.getUserId(),
-                unpinned
+                userId,
+                new ChatEvent<>("MESSAGE_UNPINNED", unpinned)
         );
     }
 
     @MessageMapping("chat.updateAvatar")
-    public void updateConvAvatarUrl(@Payload UploadAvatarUrlDTO avatarUrlDTO, Principal principal) {
+    public void updateConvAvatarUrl(@Payload UploadAvatarUrlDTO avatarUrlDTO) {
+        int userId = SecurityUtils.getUserId();
+        avatarUrlDTO.setUserId(userId);
         conversationService.uploadAvatarUrl(avatarUrlDTO);
         ConversationResponseDTO conv = conversationService.getConversationResponseById(avatarUrlDTO.getConversationId());
 
         chatPublisher.broadcastToConversation(
                 avatarUrlDTO.getConversationId(),
-                avatarUrlDTO.getUserId(),
-                conv
+                userId,
+                new ChatEvent<>("AVATAR_UPDATED", conv)
         );
     }
 
     @MessageMapping("chat.addParticipant")
-    public void addParticipant(@Payload AddParticipantDTO addParticipantDTO, Principal principal) {
+    public void addParticipant(@Payload AddParticipantDTO addParticipantDTO) {
+        int userId = SecurityUtils.getUserId();
+        addParticipantDTO.setUserId(userId);
         ConversationResponseDTO conv = conversationService.addParticipant(addParticipantDTO);
         chatPublisher.broadcastToConversation(
                 addParticipantDTO.getConversationId(),
-                addParticipantDTO.getUserId(),
-                conv
+                userId,
+                new ChatEvent<>("PARTICIPANT_ADDED", conv)
         );
     }
 
     @MessageMapping("chat.removeParticipant")
-    public void removeParticipant(@Payload RemoveParticipantDTO removeParticipantDTO, Principal principal) {
+    public void removeParticipant(@Payload RemoveParticipantDTO removeParticipantDTO) {
+        int userId = SecurityUtils.getUserId();
+        removeParticipantDTO.setUserId(userId);
         ConversationResponseDTO conv = conversationService.removeParticipant(removeParticipantDTO);
         chatPublisher.broadcastToConversation(
                 removeParticipantDTO.getConversationId(),
-                removeParticipantDTO.getUserId(),
-                conv
+                userId,
+                new ChatEvent<>("PARTICIPANT_REMOVED", conv)
         );
     }
 
     @MessageMapping("chat.leave")
-    public void leaveConversation(@Payload LeaveConversationDTO leaveConversationDTO, Principal principal) {
+    public void leaveConversation(@Payload LeaveConversationDTO leaveConversationDTO) {
+        int userId = SecurityUtils.getUserId();
+        leaveConversationDTO.setUserId(userId);
         ConversationResponseDTO conv = conversationService.leaveConversation(leaveConversationDTO);
         chatPublisher.broadcastToConversation(
                 leaveConversationDTO.getConversationId(),
-                leaveConversationDTO.getUserId(),
-                conv
+                userId,
+                new ChatEvent<>("PARTICIPANT_LEFT", conv)
         );
     }
 
     @MessageMapping("chat.renameTitle")
-    public void renameConversationTitle(@Payload RenameConversationTitleDTO renameConvTitleDTO, Principal principal) {
+    public void renameConversationTitle(@Payload RenameConversationTitleDTO renameConvTitleDTO) {
+        int userId = SecurityUtils.getUserId();
+        renameConvTitleDTO.setUserId(userId);
         ConversationResponseDTO conv = conversationService.renameConversationTitle(renameConvTitleDTO);
         chatPublisher.broadcastToConversation(
                 renameConvTitleDTO.getConversationId(),
-                renameConvTitleDTO.getUserId(),
-                conv
+                userId,
+                new ChatEvent<>("TITLE_RENAMED", conv)
         );
     }
 
     @MessageMapping("chat.description")
-    public void updateConversationDescription(@Payload UpdateConversationDescriptionDTO descriptionDTO, Principal principal) {
+    public void updateConversationDescription(@Payload UpdateConversationDescriptionDTO descriptionDTO) {
+        int userId = SecurityUtils.getUserId();
+        descriptionDTO.setUserId(userId);
         ConversationResponseDTO conv = conversationService.updateConversationDescription(descriptionDTO);
         chatPublisher.broadcastToConversation(
                 descriptionDTO.getConversationId(),
-                descriptionDTO.getUserId(),
-                conv
+                userId,
+                new ChatEvent<>("DESCRIPTION_UPDATED", conv)
         );
     }
 
     @MessageMapping("chat.changeRole")
-    public void changeParticipantRole(@Payload ChangeParticipantRoleDTO changeRoleDTO, Principal principal) {
+    public void changeParticipantRole(@Payload ChangeParticipantRoleDTO changeRoleDTO) {
+        int adminId = SecurityUtils.getUserId();
+        changeRoleDTO.setCurrAdminId(adminId);
         conversationService.changeParticipantRole(changeRoleDTO);
         ConversationResponseDTO conv = conversationService.getConversationResponseById(changeRoleDTO.getConversationId());
         chatPublisher.broadcastToConversation(
                 changeRoleDTO.getConversationId(),
-                changeRoleDTO.getCurrAdminId(),
-                conv
+                adminId,
+                new ChatEvent<>("ROLE_CHANGED", conv)
         );
     }
 
     @MessageMapping("chat.mute")
-    public void muteConversation(@Payload MuteConvDTO muteConvDTO, Principal principal) {
+    public void muteConversation(@Payload MuteConvDTO muteConvDTO) {
+        int userId = SecurityUtils.getUserId();
+        muteConvDTO.setUserId(userId);
         conversationService.muteConversation(muteConvDTO);
         chatPublisher.broadcastToConversation(
                 muteConvDTO.getConversationId(),
-                muteConvDTO.getUserId(),
-                "Group muted"
+                userId,
+                "GROUP_MUTED"
         );
     }
 
     @MessageMapping("chat.unMute")
-    public void UnMuteConversation(@Payload UnMuteConvDTO unMuteConvDTO, Principal principal) {
+    public void UnMuteConversation(@Payload UnMuteConvDTO unMuteConvDTO) {
+        int userId = SecurityUtils.getUserId();
+        unMuteConvDTO.setUserId(userId);
         conversationService.unMuteConversation(unMuteConvDTO);
 
         chatPublisher.broadcastToConversation(
                 unMuteConvDTO.getConversationId(),
-                unMuteConvDTO.getUserId(),
-                "GROUP UN MUTED"
+                userId,
+                "GROUP_UN_MUTED"
         );
     }
 
     @MessageMapping("chat.favorite")
-    public void addOrRemoveAsFavorites(@Payload FavoriteConvDTO favoriteConvDTO, Principal principal) {
+    public void addOrRemoveAsFavorites(@Payload FavoriteConvDTO favoriteConvDTO) {
+        int userId = SecurityUtils.getUserId();
+        favoriteConvDTO.setUserId(userId);
         ConversationResponseDTO conv = conversationService.addOrRemoveAsFavorites(favoriteConvDTO);
         chatPublisher.broadcastToConversation(
                 favoriteConvDTO.getConversationId(),
-                favoriteConvDTO.getUserId(),
-                conv
+                userId,
+                new ChatEvent<>("ADDED_TO_FAV", conv)
         );
     }
 
     @MessageMapping("chat.archive")
-    public void addOrRemoveAsArchive(@Payload ArchiveConvDTO archiveConvDTO, Principal principal) {
+    public void addOrRemoveAsArchive(@Payload ArchiveConvDTO archiveConvDTO) {
+        int userId = SecurityUtils.getUserId();
+        archiveConvDTO.setUserId(userId);
         ConversationResponseDTO conv = conversationService.addOrRemoveAsArchive(archiveConvDTO);
         chatPublisher.broadcastToConversation(
                 archiveConvDTO.getConversationId(),
-                archiveConvDTO.getUserId(),
-                conv
+                userId,
+                new ChatEvent<>("ADDED_TO_ARCHIVE", conv)
         );
     }
 
     @MessageMapping("chat.block")
-    public void blockUser(@Payload BlockingDTO blockingDTO, Principal principal) {
+    public void blockUser(@Payload BlockingDTO blockingDTO) {
+        int blockerId = SecurityUtils.getUserId();
+        blockingDTO.setBlockerId(blockerId);
         blockedService.blockUser(blockingDTO);
 
         simpMessagingTemplate.convertAndSendToUser(
-                String.valueOf(blockingDTO.getBlockerId()),
+                String.valueOf(blockerId),
                 "/queue/block",
                 "Blocked user Id: "+ blockingDTO.getBlockedId()
         );
     }
 
     @MessageMapping("chat.unBlock")
-    public void unBlockUser(@Payload BlockingDTO blockingDTO, Principal principal) {
+    public void unBlockUser(@Payload BlockingDTO blockingDTO) {
+        int blockerId = SecurityUtils.getUserId();
+        blockingDTO.setBlockerId(blockerId);
         blockedService.unBlockUser(blockingDTO);
 
         simpMessagingTemplate.convertAndSendToUser(
-                String.valueOf(blockingDTO.getBlockerId()),
+                String.valueOf(blockerId),
                 "/queue/unblock",
                 "Unblocked user Id: "+blockingDTO.getBlockedId()
         );
@@ -250,6 +285,8 @@ public class ChatController {
 
     @MessageMapping("chat.moderate")
     public void moderateUser(@Payload GroupModerationDTO moderationDTO){
+        int moderatorId = SecurityUtils.getUserId();
+        moderationDTO.setModeratorId(moderatorId);
         conversationService.moderateGroupUser(moderationDTO);
 
         simpMessagingTemplate.convertAndSend(
