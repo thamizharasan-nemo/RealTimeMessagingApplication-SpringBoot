@@ -9,9 +9,9 @@ import com.example.RealTimeChat.exception.UserNotFoundException;
 import com.example.RealTimeChat.model.User;
 import com.example.RealTimeChat.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -23,8 +23,13 @@ import java.util.List;
 @Service
 public class UserService {
 
-    @Autowired
-    UserRepository userRepo;
+    private final UserRepository userRepo;
+    private final PasswordEncoder passwordEncoder;
+
+    public UserService(UserRepository userRepo, PasswordEncoder passwordEncoder) {
+        this.userRepo = userRepo;
+        this.passwordEncoder = passwordEncoder;
+    }
 
 
     public List<User> getAllUsers() {
@@ -41,7 +46,7 @@ public class UserService {
     }
 
     public UserResponseDTO findByUsername(String username) {
-        User user = userRepo.findByUsername(username);
+        User user = userRepo.getByUsername(username);
         if(user == null){
             throw new UserNotFoundException("User with " + username + " not found.");
         }
@@ -70,7 +75,7 @@ public class UserService {
 
     public User convertToUserFromDTO(User user, UserDTO userDTO) {
         user.setUsername(userDTO.getUsername());
-        user.setPassword(userDTO.getPassword());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         user.setPhoneNo(userDTO.getPhoneNo());
         user.setNickname(userDTO.getNickname());
         user.setBio(userDTO.getBio().isEmpty() ? "Hey there! I'm using this app" : userDTO.getBio());

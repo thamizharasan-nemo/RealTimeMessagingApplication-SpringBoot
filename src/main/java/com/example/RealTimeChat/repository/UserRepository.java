@@ -3,11 +3,8 @@ package com.example.RealTimeChat.repository;
 import com.example.RealTimeChat.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-    Optional<User> loadByUsername(String username);
+    Optional<User> findByUsername(String username);
 
     @Query("SELECT u FROM User u " +
             "WHERE LOWER(u.phoneNo) LIKE LOWER(CONCAT('%', :phoneNo, '%'))")
@@ -23,7 +20,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query("SELECT u FROM User u " +
             "WHERE LOWER(u.username) LIKE LOWER(CONCAT('%', :username, '%'))")
-    User findByUsername(@Param("username") String username);
+    User getByUsername(@Param("username") String username);
 
     @Query("SELECT u FROM User u " +
             "WHERE (:keyword IS NULL OR LOWER(u.username) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +

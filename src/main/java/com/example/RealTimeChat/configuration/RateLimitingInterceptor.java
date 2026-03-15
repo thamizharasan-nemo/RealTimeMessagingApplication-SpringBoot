@@ -1,5 +1,6 @@
 package com.example.RealTimeChat.configuration;
 
+import com.example.RealTimeChat.exception.BadRequestException;
 import com.example.RealTimeChat.service.RateLimitingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
@@ -10,6 +11,8 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.stereotype.Component;
+
+import java.security.Principal;
 
 @Slf4j
 @Component
@@ -27,12 +30,14 @@ public class RateLimitingInterceptor implements ChannelInterceptor {
         if (headerAccessor == null) return message;
 
         if (StompCommand.SEND.equals(headerAccessor.getCommand())){
-            String user = (headerAccessor.getUser() != null) ? headerAccessor.getUser().getName() : null;
 
-            if(user == null){
-                String headerUser = headerAccessor.getFirstNativeHeader("X-User_Id");
-                user = (headerUser != null) ? headerUser : "Anonymous user";
+            Principal principal = headerAccessor.getUser();
+
+            if(principal == null){
+                throw new BadRequestException("Unauthorized user");
             }
+
+            String user = principal.getName();
 
             String key = "ws:user:" + user;
             boolean allowed = rateLimitingService.tryConsume(key, 1);

@@ -305,4 +305,13 @@ public class ChatController {
         );
     }
 
+    @MessageMapping("chat.typing")
+    public void typing(ChatTypingDTO typingDTO) {
+        chatPublisher.broadcastToConversation(
+                typingDTO.getConversationId(),
+                SecurityUtils.getUserId(),
+                new ChatEvent<>("USER_TYPING", typingDTO)
+        );
+    }
+
 }

@@ -2,6 +2,7 @@ package com.example.RealTimeChat.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,8 +20,8 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String SECRET_KEY;
 
-    @Value("${jwt.expirationInSec}")   //432000 - 5 days in seconds
-    private int expirationSeconds; // 5 days
+    @Value("${jwt.expirationInSec}")
+    private int expirationSeconds;
 
 
     public Key getSignInKey() {
@@ -32,7 +33,7 @@ public class JwtService {
     }
 
     public String extractRole(String token){
-        return extractClaim(token, claims -> claims.get("role")).toString();
+        return extractClaim(token, claims -> claims.get("roles")).toString();
     }
 
     public Integer extractUserId(String token){

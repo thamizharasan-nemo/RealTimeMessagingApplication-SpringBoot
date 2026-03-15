@@ -26,6 +26,4 @@ public class UserDTO {
     private MultipartFile imageFile;
 
     private String bio;
-    private boolean online;
-    private Instant lastSeen;
 }
