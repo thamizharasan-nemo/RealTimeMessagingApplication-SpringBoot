@@ -74,8 +74,15 @@ public class Message {
     @Enumerated(EnumType.STRING)
     private MessageType messageType;
 
+    @Enumerated(EnumType.STRING)
+    private MessageStatus messageStatus;
+
     public enum MessageType {
         TEXT, IMG, FILE
+    }
+
+    public enum MessageStatus {
+        SENT, DELIVERED, READ
     }
 
     public void addReply(Message reply){

@@ -11,8 +11,6 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
-import java.sql.Time;
-import java.time.LocalDateTime;
 
 
 @Configuration
@@ -21,10 +19,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final RateLimitingInterceptor rateLimitingInterceptor;
     private final JwtHandshakeInterceptor jwtHandshakeInterceptor;
+    private final WebSocketAuthChannelInterceptor webSocketAuthChannelInterceptor;
 
-    public WebSocketConfig(RateLimitingInterceptor rateLimitingInterceptor, JwtHandshakeInterceptor jwtHandshakeInterceptor) {
+    public WebSocketConfig(RateLimitingInterceptor rateLimitingInterceptor, JwtHandshakeInterceptor jwtHandshakeInterceptor, WebSocketAuthChannelInterceptor webSocketAuthChannelInterceptor) {
         this.rateLimitingInterceptor = rateLimitingInterceptor;
         this.jwtHandshakeInterceptor = jwtHandshakeInterceptor;
+        this.webSocketAuthChannelInterceptor = webSocketAuthChannelInterceptor;
     }
 
     @Override
@@ -49,7 +49,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
                 .addInterceptors(jwtHandshakeInterceptor)
-                .setAllowedOrigins("http://127.0.0.1:5500", "http://localhost:3000")
+                .setAllowedOrigins("http://127.0.0.1:5500", "http://localhost:3000", "http://localhost:5173")
                 .withSockJS();
     }
 
@@ -57,6 +57,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     // with custom interceptor message can be read or modified before sent to broker
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(rateLimitingInterceptor);
+        registration.interceptors(webSocketAuthChannelInterceptor, rateLimitingInterceptor);
     }
 }

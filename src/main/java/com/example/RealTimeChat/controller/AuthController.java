@@ -11,10 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -33,7 +32,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> registerUser(@Valid @RequestBody UserDTO userDTO){
+    public ResponseEntity<UserResponseDTO> registerUser(@Valid @ModelAttribute UserDTO userDTO){
         UserResponseDTO user = userService.addUser(userDTO);
         return ResponseEntity.ok(user);
     }
@@ -41,6 +40,10 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody UserDTO userDTO){
+
+//        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+//        System.out.println(passwordEncoder.encode("infinitevoid"));
+
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 userDTO.getUsername(),
                 userDTO.getPassword()

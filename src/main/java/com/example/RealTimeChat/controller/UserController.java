@@ -86,5 +86,4 @@ public class UserController {
         return ResponseEntity.ok().body("User bio updated successfully");
     }
 
-
 }

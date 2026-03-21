@@ -12,6 +12,11 @@ import java.time.Instant;
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"message_id","user_id"})
+        }
+)
 public class ReadReceipt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

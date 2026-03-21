@@ -47,7 +47,17 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGenericException(Exception ex, HttpServletRequest request){
-        ex.printStackTrace();
+
+        log.error(
+                Map.of(
+                        "message: ", Optional.ofNullable(ex.getMessage()).orElse("null error"),
+                        "timeStamp: ", LocalDateTime.now(),
+                        "status: ",500,
+                        "error: ", "Internal Server Error",
+                        "path: ", request.getRequestURI()
+                ).toString()
+        );
+
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                 Map.of(
                         "message: ", Optional.ofNullable(ex.getMessage()).orElse("null error"),

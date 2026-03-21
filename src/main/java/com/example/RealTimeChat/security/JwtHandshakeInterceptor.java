@@ -32,19 +32,28 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
         if (request instanceof ServletServerHttpRequest servletRequest){
             String token = servletRequest.getServletRequest().getParameter("token");
 
-            if (token != null){
-                String username = jwtService.extractUsername(token);
-                UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
-
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities()
-                        );
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+            if (token == null) {
+                // Reject the handshake entirely if there's no token
+                return false;
             }
+
+            String username = jwtService.extractUsername(token);
+            UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+
+            // Store in the WS session attributes map
+            attributes.put("SPRING_SECURITY_CONTEXT", authentication);
+            attributes.put("username", username);
+
+            // Removed: SecurityContextHolder.getContext().setAuthentication(authentication)
+            // This only lives on the current HTTP thread and is lost immediately after handshake
+
         }
         return true;
     }

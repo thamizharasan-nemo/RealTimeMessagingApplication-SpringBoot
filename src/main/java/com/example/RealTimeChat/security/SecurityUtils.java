@@ -2,10 +2,12 @@ package com.example.RealTimeChat.security;
 
 import com.example.RealTimeChat.exception.BadRequestException;
 import com.example.RealTimeChat.exception.NotAllowedException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 
+@Slf4j
 public class SecurityUtils {
 
     private SecurityUtils() {}
@@ -15,7 +17,7 @@ public class SecurityUtils {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         if (auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")){
-            throw new NotAllowedException("User not authenticated");
+            throw new NotAllowedException("User is not authenticated");
         }
 
         Object principal = auth.getPrincipal();
@@ -40,6 +42,7 @@ public class SecurityUtils {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         if (auth == null || !auth.isAuthenticated()) {
+            log.info("User has not authenticated :(\nFAILED fetching userId");
             return null;
         }
         Object principal = auth.getPrincipal();

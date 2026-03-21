@@ -37,25 +37,28 @@ public class ReadReceiptService {
     }
 
     public ReadReceiptResponseDTO markAsRead(ReadReceiptDTO readDTO){
+        if(readReceiptRepo.existsByMessageIdAndReaderId(readDTO.getMessageId(), readDTO.getReaderId())){
+            throw new BadRequestException("Already read by this user");
+        }
+
         Message message = messageRepo.findByMessageIdWithDetails(readDTO.getMessageId())
                 .orElseThrow(() -> new GenericNotFoundException("Message not found."));
+
         User reader = userService.getUserById(readDTO.getReaderId());
 
         ReadReceipt read = new ReadReceipt();
         read.setMessage(message);
         read.setReader(reader);
         read.setReadAt(Instant.now());
-        readReceiptRepo.save(read);
 
-        if(readReceiptRepo.existsByMessageIdAndReaderId(readDTO.getMessageId(), readDTO.getReaderId())){
-            throw new BadRequestException("Already read by this user");
-        }
+        readReceiptRepo.save(read);
         return convertToResponse(read);
     }
 
     public List<ReadReceiptResponseDTO> allReadersForMessage(int messageId){
-        Message message = messageRepo.findByMessageIdWithDetails(messageId)
-                .orElseThrow(() -> new GenericNotFoundException("Message not found or deleted."));
+        if (messageRepo.existsById(messageId)){
+            throw  new GenericNotFoundException("Message not found or deleted.");
+        }
 
         List<ReadReceipt> readReceiptList = readReceiptRepo.findAllReadersForMessage(messageId);
         return readReceiptList.stream()

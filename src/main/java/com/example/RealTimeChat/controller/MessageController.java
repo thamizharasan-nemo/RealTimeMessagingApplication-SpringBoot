@@ -37,7 +37,7 @@ public class MessageController {
     }
 
     @GetMapping("/conversation/{conversationId}")
-    public ResponseEntity<List<MessageResponseDTO>> getAllMessagesInCOnv(@PathVariable int conversationId) {
+    public ResponseEntity<List<MessageResponseDTO>> getAllMessagesInConv(@PathVariable int conversationId) {
         return ResponseEntity.ok(messageService.getAllMessagesByConvId(conversationId));
     }
 
