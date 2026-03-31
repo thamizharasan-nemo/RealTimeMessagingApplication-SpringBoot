@@ -34,6 +34,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<UserResponseDTO> registerUser(@Valid @ModelAttribute UserDTO userDTO){
         UserResponseDTO user = userService.addUser(userDTO);
+        System.out.println("\n======= User successfully logged IN=======\n");
         return ResponseEntity.ok(user);
     }
 
@@ -43,6 +44,8 @@ public class AuthController {
 
 //        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 //        System.out.println(passwordEncoder.encode("infinitevoid"));
+
+        System.out.println("\n======= User successfully logged IN=======\n");
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 userDTO.getUsername(),

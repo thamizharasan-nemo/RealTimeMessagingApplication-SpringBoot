@@ -1,6 +1,7 @@
 package com.example.RealTimeChat.repository;
 
 import com.example.RealTimeChat.model.Conversation;
+import com.example.RealTimeChat.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,6 +16,8 @@ public interface ConversationRepository extends JpaRepository<Conversation, Inte
     @Query("SELECT c FROM Conversation c " +
             "WHERE LOWER(c.title) LIKE LOWER(CONCAT('%', :title, '%'))")
     List<Conversation> findByConversationName(@Param("title") String title);
+
+    List<Conversation> findByConvCreator(User creator);
 
     // To return all message Ids in a conversation
     @Query("SELECT m.messageId FROM Conversation c " +

@@ -32,6 +32,11 @@ public class ConversationController {
         return ResponseEntity.ok(conversationService.getAllConversationAsDTO());
     }
 
+    @GetMapping("/all/user")
+    public ResponseEntity<List<ConversationResponseDTO>> getAllConversationForUser() {
+        return ResponseEntity.ok(conversationService.getAllConversationForUser());
+    }
+
     @GetMapping("/admin/id/{convId}")
     public ResponseEntity<Conversation> getConversationById(@PathVariable int convId) {
         return ResponseEntity.ok(conversationService.getConversationById(convId));

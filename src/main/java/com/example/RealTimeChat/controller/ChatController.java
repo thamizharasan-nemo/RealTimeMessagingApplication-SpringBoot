@@ -8,19 +8,15 @@ import com.example.RealTimeChat.DTO.PayloadDTO.*;
 import com.example.RealTimeChat.component.ChatEventPublisher;
 import com.example.RealTimeChat.model.Conversation;
 import com.example.RealTimeChat.model.Message;
-import com.example.RealTimeChat.security.CustomUserDetails;
-import com.example.RealTimeChat.security.CustomUserDetailsService;
 import com.example.RealTimeChat.security.SecurityUtils;
 import com.example.RealTimeChat.security.SocketSecurityUtils;
 import com.example.RealTimeChat.service.*;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
-import java.util.List;
 
 @Controller
 public class ChatController {
@@ -46,7 +42,6 @@ public class ChatController {
 
     @MessageMapping("chat.send")
     public void processGroupMessage(@Payload ChatMessageDTO chatMessageDTO, Principal principal) {
-        System.out.println("====== Message reached the controller "+ chatMessageDTO.getContent()+" =======");
         int userId = SocketSecurityUtils.getUserId(principal);
         chatMessageDTO.setSenderId(userId);
         MessageResponseDTO savedMessage = messageService.saveMessage(chatMessageDTO);
@@ -56,8 +51,6 @@ public class ChatController {
                 userId,
                 new ChatEvent<>("MESSAGE_SENT", savedMessage)
         );
-
-        System.out.println("====== Message is stored "+ chatMessageDTO.getContent()+" =======");
 
         notificationService.notifyParticipants(conversation, savedMessage);
     }

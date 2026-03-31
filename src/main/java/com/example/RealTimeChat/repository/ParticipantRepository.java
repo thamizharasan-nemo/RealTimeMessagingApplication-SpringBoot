@@ -34,6 +34,10 @@ public interface ParticipantRepository extends JpaRepository<ConversationPartici
     ConversationParticipant findByConversation_ConversationIdUser_UserId(@Param("conversationId") int conversationId,
                                                                          @Param("userId") int userId);
 
+    @Query("SELECT DISTINCT cp.conversation FROM ConversationParticipant cp " +
+            "WHERE cp.user.userId = :userId")
+    List<Conversation> findAllConversationByUserId(@Param("userId") int userId);
+
     @Query("SELECT COUNT(p) FROM ConversationParticipant p " +
             "WHERE p.conversation.conversationId = :conversationId " +
             "AND p.participantRole = :participantRole")
@@ -69,6 +73,5 @@ public interface ParticipantRepository extends JpaRepository<ConversationPartici
             "AND p.user.userId = :userId")
     void deleteByConversation_ConversationIdAndUser_UserId(@Param("conversationId") int conversationId,
                                                            @Param("userId") int userId);
-
 
 }
