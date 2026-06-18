@@ -24,16 +24,17 @@ public class FCMInitializer {
     public void initialize() {
         try {
             FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setCredentials(GoogleCredentials
-                            .fromStream(new ClassPathResource(firebaseConfigPath)
-                                    .getInputStream()))
+                    .setCredentials(
+                            GoogleCredentials
+                                    .fromStream(new ClassPathResource(firebaseConfigPath)
+                                            .getInputStream())
+                    )
                     .build();
-            if(FirebaseApp.getApps().isEmpty()){
+            if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options);
                 logger.info("Firebase is initialized");
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }

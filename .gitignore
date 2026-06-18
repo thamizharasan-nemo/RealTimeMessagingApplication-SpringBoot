@@ -44,8 +44,7 @@ Thumbs.db
 # Environment & secrets
 .env
 .env.*
-application-local.properties
-application-prod-local.properties
+application-dev.properties
 
 # Docker
 docker-compose.override.yml
@@ -56,3 +55,5 @@ docker-compose.override.yml
 
 # Firebase credentials
 src/main/resources/firebase/*.json
+
+uploads/
