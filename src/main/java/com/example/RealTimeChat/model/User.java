@@ -48,9 +48,9 @@ public class User {
     private String profPicName;
     private String imageType;
 
-    @JdbcTypeCode(SqlTypes.BINARY)
-    @Column(name = "prof_pic")
-//    @Lob
+//    @JdbcTypeCode(SqlTypes.BINARY)
+//    @Column(name = "prof_pic")
+    @Lob
     private byte[] profPic;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
