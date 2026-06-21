@@ -57,3 +57,4 @@ docker-compose.override.yml
 src/main/resources/firebase/*.json
 
 uploads/
+docs/
