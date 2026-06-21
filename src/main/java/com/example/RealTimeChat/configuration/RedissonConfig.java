@@ -16,19 +16,19 @@ public class RedissonConfig {
     @Value("${spring.data.redis.port}")
     private String redisPort;
 
-//    @Value("${spring.data.redis.username}")
-//    private String redisUsername;
-//
-//    @Value("${spring.data.redis.password}")
-//    private String redisPassword;
+    @Value("${spring.data.redis.username}")
+    private String redisUsername;
+
+    @Value("${spring.data.redis.password}")
+    private String redisPassword;
 
     @Bean(destroyMethod = "shutdown")
     public RedissonClient redissonClient() {
         Config config = new Config();
         config.useSingleServer()
                 .setAddress("redis://" + redisHost + ":" + redisPort)
-//                .setUsername(redisUsername)
-//                .setPassword(redisPassword)
+                .setUsername(redisUsername)
+                .setPassword(redisPassword)
                 .setConnectionPoolSize(8)
                 .setConnectionMinimumIdleSize(2);
 
