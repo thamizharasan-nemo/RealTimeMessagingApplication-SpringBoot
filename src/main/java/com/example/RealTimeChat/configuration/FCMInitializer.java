@@ -23,6 +23,12 @@ public class FCMInitializer {
     @PostConstruct
     public void initialize() {
         try {
+
+            if(firebaseConfigPath == null || firebaseConfigPath.isBlank()) {
+                logger.warn("Firebase file not provided, skipping Firebase initialization.");
+                return;
+            }
+
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(
                             GoogleCredentials
