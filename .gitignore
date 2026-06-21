@@ -44,7 +44,7 @@ Thumbs.db
 # Environment & secrets
 .env
 .env.*
-application-dev.properties
+src/main/resources/application-dev.properties
 
 # Docker
 docker-compose.override.yml

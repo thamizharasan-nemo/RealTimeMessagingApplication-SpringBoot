@@ -8,7 +8,6 @@ import com.example.RealTimeChat.exception.BadRequestException;
 import com.example.RealTimeChat.exception.UserNotFoundException;
 import com.example.RealTimeChat.model.User;
 import com.example.RealTimeChat.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +18,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -53,8 +53,13 @@ public class UserService {
         return convertToResponseDTO(user);
     }
 
+    public Optional<User> findByPhone(String phone) {
+        System.out.println("\nPHONE NUMBER: " + phone + "\n");
+        return userRepo.findByPhoneNo(phone);
+    }
+
     public List<UserResponseDTO> findByPhoneNo(String phoneNo) {
-        List<User> users = userRepo.findByPhoneNo(phoneNo);
+        List<User> users = userRepo.findByPhoneNoList(phoneNo);
         if(users.isEmpty()) {
             throw new UserNotFoundException("User with phone number" + phoneNo + " not found.");
         }
@@ -80,9 +85,11 @@ public class UserService {
         user.setNickname(userDTO.getNickname());
         user.setBio(userDTO.getBio().isEmpty() ? "Hey there! I'm using this app" : userDTO.getBio());
         try {
-            user.setProfPic(userDTO.getImageFile().getBytes());
-            user.setImageType(userDTO.getImageFile().getContentType());
-            user.setProfPicName(userDTO.getImageFile().getOriginalFilename());
+            if (userDTO.getImageFile() != null){
+                user.setProfPic(userDTO.getImageFile().getBytes());
+                user.setImageType(userDTO.getImageFile().getContentType());
+                user.setProfPicName(userDTO.getImageFile().getOriginalFilename());
+            }
         } catch (IOException io){
             throw new RuntimeException("Error while uploading profile pic" + io.getMessage());
         }
@@ -115,6 +122,8 @@ public class UserService {
     @Transactional
     public UserResponseDTO addUser(UserDTO userDTO){
 
+        System.out.println("\nUser tried to login "+userDTO.getUsername()+"\n");
+
         if(userRepo.existsByUsername(userDTO.getUsername())){
             throw new BadRequestException("Username was taken! Try something new.");
         }
@@ -125,6 +134,9 @@ public class UserService {
 
         User user = new User();
         userRepo.save(convertToUserFromDTO(user, userDTO));
+
+        System.out.println("\nUser "+userDTO.getUsername()+" successfully registered\n");
+
         return convertToResponseDTO(user);
     }
 

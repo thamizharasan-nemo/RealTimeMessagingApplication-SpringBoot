@@ -6,6 +6,8 @@ import com.example.RealTimeChat.DTO.ConversationResponseDTO;
 import com.example.RealTimeChat.DTO.PayloadDTO.*;
 import com.example.RealTimeChat.model.Conversation;
 import com.example.RealTimeChat.model.ParticipantRole;
+import com.example.RealTimeChat.security.SecurityUtils;
+import com.example.RealTimeChat.security.SocketSecurityUtils;
 import com.example.RealTimeChat.service.ConversationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -68,6 +70,28 @@ public class ConversationController {
     public ResponseEntity<?> deleteMessagesInConv(@RequestParam int conversationId) {
         conversationService.deleteAllMessagesInThisConv(conversationId);
         return ResponseEntity.ok().body("Messages in conversation with id " + conversationId + " deleted successfully.");
+    }
+
+    // Create private conversation
+    @PostMapping("/private/{targetUserId}")
+    public ResponseEntity<ConversationResponseDTO> createPrivate(@PathVariable int targetUserId) {
+        int currentUserId = SecurityUtils.getUserId();
+        return ResponseEntity.ok(conversationService.createPrivateConversation(currentUserId, targetUserId));
+    }
+
+    // Create group conversation
+    @PostMapping("/group")
+    public ResponseEntity<ConversationResponseDTO> createGroup(
+            @RequestBody ConversationDTO dto,
+            @RequestParam(required = false) MultipartFile file) {
+        return ResponseEntity.ok(conversationService.createConversation(dto, file));
+    }
+
+    // Delete group
+    @DeleteMapping("/{conversationId}")
+    public ResponseEntity<Void> deleteGroup(@PathVariable int conversationId) {
+        conversationService.deleteConvEntirely(conversationId);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/add/participant")

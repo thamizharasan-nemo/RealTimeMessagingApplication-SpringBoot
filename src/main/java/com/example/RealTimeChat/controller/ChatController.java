@@ -71,8 +71,8 @@ public class ChatController {
     public void deleteMessage(@Payload DeleteMessageDTO deleteMessageDTO, Principal principal) {
         int userId = SocketSecurityUtils.getUserId(principal);
         deleteMessageDTO.setUserId(userId);
-       messageService.softDeleteMessage(deleteMessageDTO);
-       MessageResponseDTO softDeleted = messageService.getMessageResponseById(deleteMessageDTO.getMessageId());
+        messageService.softDeleteMessage(deleteMessageDTO);
+        MessageResponseDTO softDeleted = messageService.getMessageResponseById(deleteMessageDTO.getMessageId());
         chatPublisher.broadcastToConversation(
                 deleteMessageDTO.getConversationId(),
                 userId,

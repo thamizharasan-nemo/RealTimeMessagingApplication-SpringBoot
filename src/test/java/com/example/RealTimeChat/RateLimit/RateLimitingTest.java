@@ -2,6 +2,7 @@ package com.example.RealTimeChat.RateLimit;
 
 import com.example.RealTimeChat.service.RateLimitingService;
 import org.junit.jupiter.api.BeforeAll;
+import org.redisson.api.RedissonClient;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,10 +12,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 public class RateLimitingTest {
 
     static RateLimitingService rateLimitingService;
+    static RedissonClient redissonClient;
 
     @BeforeAll
     static void setup(){
-        rateLimitingService = new RateLimitingService();
+        rateLimitingService = new RateLimitingService(redissonClient);
     }
 
     void allowsInitially_then_denies_when_exhausted(){

@@ -20,11 +20,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private final RateLimitingInterceptor rateLimitingInterceptor;
     private final JwtHandshakeInterceptor jwtHandshakeInterceptor;
     private final WebSocketAuthChannelInterceptor webSocketAuthChannelInterceptor;
+//    private final CustomHandshakeHandler customHandshakeHandler;
 
     public WebSocketConfig(RateLimitingInterceptor rateLimitingInterceptor, JwtHandshakeInterceptor jwtHandshakeInterceptor, WebSocketAuthChannelInterceptor webSocketAuthChannelInterceptor) {
         this.rateLimitingInterceptor = rateLimitingInterceptor;
         this.jwtHandshakeInterceptor = jwtHandshakeInterceptor;
         this.webSocketAuthChannelInterceptor = webSocketAuthChannelInterceptor;
+//        this.customHandshakeHandler = customHandshakeHandler;
     }
 
     @Override
@@ -49,6 +51,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
                 .addInterceptors(jwtHandshakeInterceptor)
+//                .setHandshakeHandler(customHandshakeHandler)
                 .setAllowedOrigins("http://127.0.0.1:5500", "http://localhost:3000", "http://localhost:5173")
                 .withSockJS();
     }

@@ -27,11 +27,11 @@ public class RateLimitingService {
     private final ProxyManager<String> proxyManager;
     private final RedissonClient redissonClient;
 
-    public RateLimitingService(){
-        Config config = new Config();
-        config.useSingleServer().setAddress("redis://127.0.0.1:6379");
-        this.redissonClient = Redisson.create(config);
-        this.proxyManager = Bucket4jRedisson.casBasedBuilder(((Redisson) redissonClient).getCommandExecutor()).build();
+    public RateLimitingService(RedissonClient redissonClient) {
+        this.redissonClient = redissonClient;
+        this.proxyManager = Bucket4jRedisson
+                .casBasedBuilder(((Redisson) redissonClient).getCommandExecutor())
+                .build();
 
         Bandwidth limit = Bandwidth.builder()
                 .capacity(30)

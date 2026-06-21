@@ -501,7 +501,7 @@ public class ConversationService {
 
 
     public void muteConversation(MuteConvDTO muteConvDTO){
-        if(conversationRepo.existsById(muteConvDTO.getConversationId())){
+        if(!conversationRepo.existsById(muteConvDTO.getConversationId())){
             throw new ConversationNotFoundException("Conversation not found.");
         }
         ConversationParticipant participant = participantRepo
@@ -514,7 +514,7 @@ public class ConversationService {
     }
 
     public void unMuteConversation(UnMuteConvDTO unMuteConvDTO){
-        if(conversationRepo.existsById(unMuteConvDTO.getConversationId())){
+        if(!conversationRepo.existsById(unMuteConvDTO.getConversationId())){
             throw new ConversationNotFoundException("Conversation not found.");
         }
         ConversationParticipant participant = participantRepo
@@ -527,7 +527,7 @@ public class ConversationService {
     }
 
     public ConversationResponseDTO addOrRemoveAsFavorites(FavoriteConvDTO favoriteConvDTO) {
-        if(conversationRepo.existsById(favoriteConvDTO.getConversationId())){
+        if(!conversationRepo.existsById(favoriteConvDTO.getConversationId())){
             throw new ConversationNotFoundException("Conversation not found.");
         }
         ConversationParticipant cp = participantRepo
@@ -541,7 +541,7 @@ public class ConversationService {
     }
 
     public ConversationResponseDTO addOrRemoveAsArchive(ArchiveConvDTO archiveConvDTO) {
-        if(conversationRepo.existsById(archiveConvDTO.getConversationId())){
+        if(!conversationRepo.existsById(archiveConvDTO.getConversationId())){
             throw new ConversationNotFoundException("Conversation not found.");
         }
         ConversationParticipant cp = participantRepo

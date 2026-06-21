@@ -54,6 +54,8 @@ public class AuthController {
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(userDTO.getUsername());
 
+        System.out.println("\n======= "+userDetails.toString()+"=======\n");
+
         return ResponseEntity.ok(jwtService.generateToken(userDetails));
     }
 }

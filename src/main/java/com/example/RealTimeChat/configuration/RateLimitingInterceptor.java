@@ -10,6 +10,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.security.Principal;
@@ -42,7 +43,9 @@ public class RateLimitingInterceptor implements ChannelInterceptor {
 
             if (!(principal instanceof UsernamePasswordAuthenticationToken auth) ||
                     !(auth.getPrincipal() instanceof CustomUserDetails userDetails)) {
-                log.warn("Invalid Principal type");
+
+                System.out.println("PRINCIPAL "+(principal instanceof UsernamePasswordAuthenticationToken ));
+                log.warn("Invalid Principal type "+principal.getName());
                 return null;
             }
 

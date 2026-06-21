@@ -5,6 +5,7 @@ import com.example.RealTimeChat.service.RateLimitingService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.redisson.api.RedissonClient;
 import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -13,10 +14,11 @@ public class RateLimitingFilterTest {
 
     RateLimitingService rateLimitingService;
     RateLimitingFilter rateLimitingFilter;
+    RedissonClient redissonClient;
 
     @BeforeEach
     void setup(){
-        rateLimitingService = new RateLimitingService();
+        rateLimitingService = new RateLimitingService(redissonClient);
         rateLimitingFilter = new RateLimitingFilter(rateLimitingService);
     }
 

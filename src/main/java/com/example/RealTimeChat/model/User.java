@@ -2,9 +2,9 @@ package com.example.RealTimeChat.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.data.redis.core.RedisHash;
@@ -14,7 +14,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -46,7 +47,10 @@ public class User {
     // STORES Image in DB
     private String profPicName;
     private String imageType;
-    @Column(columnDefinition = "MEDIUMBLOB")
+
+    @JdbcTypeCode(SqlTypes.BINARY)
+    @Column(name = "prof_pic")
+//    @Lob
     private byte[] profPic;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -45,4 +45,16 @@ public class ChatEventPublisher {
             );
         }
     }
+
+//    public void broadcastToConversation(int conversationId, int senderId, Object payload) {
+//
+//        // Always broadcast to the conversation topic — works for BOTH group and private
+//        // The old approach (convertAndSendToUser for private) silently failed because
+//        // Spring couldn't find sessions without a Principal on the WebSocket session.
+//        // Topic broadcast requires no Principal at all.
+//        simpMessagingTemplate.convertAndSend(
+//                "/topic/conversation." + conversationId,
+//                payload
+//        );
+//    }
 }

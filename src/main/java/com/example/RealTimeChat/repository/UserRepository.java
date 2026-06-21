@@ -14,9 +14,12 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     Optional<User> findByUsername(String username);
 
+    Optional<User> findByPhoneNo(String phone);
+
     @Query("SELECT u FROM User u " +
             "WHERE LOWER(u.phoneNo) LIKE LOWER(CONCAT('%', :phoneNo, '%'))")
-    List<User> findByPhoneNo(String phoneNo);
+    // One phone number can be hold by only one person, right? Then why did I create this method that returns List.of() users? -dumb
+    List<User> findByPhoneNoList(String phoneNo);
 
     @Query("SELECT u FROM User u " +
             "WHERE LOWER(u.username) LIKE LOWER(CONCAT('%', :username, '%'))")

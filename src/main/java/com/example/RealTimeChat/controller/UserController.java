@@ -47,8 +47,15 @@ public class UserController {
         return ResponseEntity.ok(userService.findByUsername(username));
     }
 
+    @GetMapping("/search/number")
+    public ResponseEntity<?> searchByPhone(@RequestParam String phone) {
+        return userService.findByPhone(phone)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @GetMapping("/search-with")
-    public ResponseEntity<List<UserResponseDTO>> getUsersByPhoneNo(@RequestParam String phoneNo) {
+    public ResponseEntity<List<UserResponseDTO>> getUserByPhoneNo(@RequestParam String phoneNo) {
         return ResponseEntity.ok(userService.findByPhoneNo(phoneNo));
     }
 
