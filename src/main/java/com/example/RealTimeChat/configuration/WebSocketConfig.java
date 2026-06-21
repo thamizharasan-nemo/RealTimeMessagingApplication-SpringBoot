@@ -52,7 +52,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/ws")
                 .addInterceptors(jwtHandshakeInterceptor)
 //                .setHandshakeHandler(customHandshakeHandler)
-                .setAllowedOrigins("http://127.0.0.1:5500", "http://localhost:3000", "http://localhost:5173")
+                .setAllowedOrigins("*")
                 .withSockJS();
     }
 
