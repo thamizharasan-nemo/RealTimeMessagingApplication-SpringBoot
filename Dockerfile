@@ -9,4 +9,4 @@ RUN ./mvnw clean package -DskipTests
 
 EXPOSE 8080
 
-CMD ["java", "jar", "target/RealTimeChat-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "target/RealTimeChat-0.0.1-SNAPSHOT.jar"]
