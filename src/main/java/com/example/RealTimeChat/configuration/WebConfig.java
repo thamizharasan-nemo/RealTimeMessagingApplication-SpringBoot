@@ -19,7 +19,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOriginPatterns(
-                        "*"
+                        "https://realtime-messaging-platform-react.vercel.app"
                 )
                 .allowedMethods("*")
                 .allowCredentials(true);

@@ -52,7 +52,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/ws")
                 .addInterceptors(jwtHandshakeInterceptor)
 //                .setHandshakeHandler(customHandshakeHandler)
-                .setAllowedOrigins("*")
+                .setAllowedOrigins("https://realtime-messaging-platform-react.vercel.app")
                 .withSockJS();
     }
 
