@@ -51,7 +51,7 @@ public class ChatController {
                 userId,
                 new ChatEvent<>("MESSAGE_SENT", savedMessage)
         );
-
+//        System.out.println("\nMESSAGE: "+chatMessageDTO.getContent()+"\n");
         notificationService.notifyParticipants(conversation, savedMessage);
     }
 

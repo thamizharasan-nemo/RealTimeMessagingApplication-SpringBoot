@@ -34,9 +34,9 @@ public class RateLimitingService {
                 .build();
 
         Bandwidth limit = Bandwidth.builder()
-                .capacity(30)
-                .refillGreedy(30, Duration.ofMinutes(1))
-                .initialTokens(30)
+                .capacity(100)
+                .refillGreedy(100, Duration.ofMinutes(1))
+                .initialTokens(100)
                 .build();
         this.bucketConfig = () -> BucketConfiguration.builder()
                 .addLimit(limit)
