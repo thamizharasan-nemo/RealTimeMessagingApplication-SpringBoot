@@ -1,5 +1,26 @@
-# Real-Time Chat App Backend (Spring Boot + WebSocket)
-A backend system for a real-time messaging application built with Spring Boot, WebSocket, Redis, and Firebase Cloud Messaging.
+# Real-Time Messaging Platform
+
+A full-stack real-time messaging platform built with Spring Boot, React, WebSocket/STOMP, PostgreSQL, Redis, and JWT Authentication.
+
+The system supports real-time messaging, user presence tracking, distributed rate limiting, conversation management, file sharing, and push notifications. It is deployed using Render, Vercel, Neon PostgreSQL, and Redis Cloud.
+
+### Live Demo
+
+Frontend: [https://chat-messaging-app.vercel.app](https://realtime-messaging-platform-react.vercel.app/)
+
+Backend API: [https://realtime-messaging-platform-springboot.onrender.com](https://realtime-messaging-platform-springboot.onrender.com)
+
+### Key Features
+
+* Real-time chat using WebSocket/STOMP
+* JWT authentication and authorization
+* Redis-based online presence tracking
+* Distributed rate limiting using Bucket4j + Redis
+* File uploads for profile pictures and chat attachments
+* Push notifications using Firebase Cloud Messaging
+* PostgreSQL persistence with Spring Data JPA
+* Cloud deployment with Vercel, Render, Neon, and Redis Cloud
+
 
 ## Overview
 
@@ -8,7 +29,16 @@ This project is a backend system for a real-time chat application built using Sp
 The goal of this project is to design a chat backend that supports real-time messaging, conversation management, presence tracking, moderation features, and push notifications. 
 Users can send and receive messages instantly through WebSocket connections. The system also tracks online presence using Redis and sends push notifications using Firebase Cloud Messaging (FCM).
 
-The project focuses mainly on backend architecture and system design rather than UI.
+## Screenshots
+
+### Login Page
+![Register](docs/register.png)
+
+### Conversation Creation
+![Creation](docs/creation.png)
+
+### Chat Interface
+![Chat](docs/chat.png)
 
 ## Problem Statement
 
@@ -31,7 +61,7 @@ The goal was to design a system that resembles a simplified version of messaging
 ## Tech Stack
 
 Backend:
-- Java
+- Java 17+
 - Spring Boot
 - Spring WebSocket (STOMP)
 - Spring Security
@@ -57,26 +87,37 @@ Build Tool:
 The backend provides several core features commonly found in modern messaging systems.
 
 ### Real-Time Messaging
-- WebSocket based communication using STOMP
-- instant message delivery between participants
 
-### Authentication
-- JWT based authentication
-- WebSocket handshake authentication
+* Bidirectional communication using WebSocket/STOMP
+* Supports private conversations between users
+* Instant message delivery without polling
 
-### Conversation Management
-- create private conversations
-- manage conversation participants
-- retrieve conversation messages
+### Authentication & Security
+
+* JWT-based authentication
+* Secured WebSocket handshake authentication
+* Distributed rate limiting to prevent message flooding
 
 ### Presence Tracking
-- track online/offline user status
-- Redis used as a presence cache
 
-### Moderation System
-- block users
-- ban users
-- prevent unwanted interactions
+* Online/offline user tracking using Redis
+* Real-time presence updates for connected users
+
+### File Sharing
+
+* Profile picture uploads
+* Chat attachment support for images and documents
+
+### Notifications
+
+* Firebase Cloud Messaging integration
+* Offline users receive push notifications
+
+### Moderation
+
+* User blocking
+* User banning
+* Protection against unwanted interactions
 
 ### Rate Limiting
 - protect the system from flooded messages
@@ -143,6 +184,36 @@ component      → event publishing and helpers
 exception      → global exception handling  
 DTO            → request and response objects
 ```
+
+## Technical Challenges Solved
+
+### Distributed Rate Limiting
+
+Implemented distributed rate limiting using Bucket4j and Redis to ensure limits remain consistent across multiple application instances.
+
+### Presence Tracking
+
+Designed a Redis-backed presence system to track user online/offline status in real time without repeatedly querying the database.
+
+### WebSocket Authentication
+
+Integrated JWT authentication into WebSocket handshakes to ensure only authenticated users can subscribe and publish messages.
+
+## Deployment
+
+Frontend:
+- Vercel
+
+Backend:
+- Render
+
+Database:
+- Neon PostgreSQL
+
+Cache:
+- Redis Cloud
+
+The application is deployed and accessible through public URLs for demonstration purposes.
 
 ## Running the Project
 
